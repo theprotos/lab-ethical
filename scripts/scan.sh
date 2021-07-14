@@ -41,3 +41,7 @@ net.sniff on
 
 http://www.vulnweb.com/
 
+sudo bettercap -iface eth1 -caplet /vagrant/spoof.cap
+
+
+caplets.show

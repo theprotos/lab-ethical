@@ -43,7 +43,8 @@ end
     kali.vm.hostname = "#{PROJECT}-kali"
     kali.vm.network "private_network",
           type: "static",
-          ip: "192.168.100.100"
+          ip: "192.168.100.100",
+          netmask:"255.255.255.0"
     #kali.vm.network "private_network",
     #  type: "static",
     #  ip: "192.168.100.100",
@@ -66,7 +67,6 @@ end
     kali.vm.provision "shell", run: "always", inline: <<-SHELL
       cd /vagrant
       ./kali-bootstrap.sh
-      #./network.sh -m 00:11:22:33:44:55
     SHELL
     #  kali.vm.provision "ansible" do |ansible|
     #    ansible.compatibility_mode = "2.0"
@@ -118,16 +118,19 @@ end
       vb.customize ["modifyvm", :id, "--description", "#{DESCRIPTION}"]
       vb.customize ["setextradata", :id, "GUI/HidLedsSync", 0]
     end
-    #win.vm.synced_folder "scripts", "/vagrant", type: "smb", create: "true"
+    win.vm.synced_folder "scripts", "/vagrant", type: "smb", create: "true"
     win.vm.provision "shell", run: "always", inline: <<-SHELL
       echo "  --> Disable eth0"
       netsh interface set interface "Ethernet" disable
       echo "  --> Setup eth1"
       netsh interface ipv4 set address name="Ethernet 2" static 192.168.100.101 255.255.255.0 192.168.100.10
-      netsh interface ip set dns "Ethernet 2" static 1.1.1.1
-      #IPv4
+      echo "  --> Setup dns for eth1"
+      netsh interface ipv4 set dnsserver "Ethernet 2" static none
+      netsh interface ipv4 add dns "Ethernet 2" 1.1.1.1 1
+      netsh interface ipv4 add dns "Ethernet 2" 8.8.8.8 2
+      echo "  --> enable ICMP for IPv4"
       netsh advfirewall firewall add rule name="ICMP Allow incoming V4 echo request" protocol="icmpv4:8,any" dir=in action=allow
-      #IPv6
+      echo "  --> enable ICMP for IPv6"
       netsh advfirewall firewall add rule name="ICMP Allow incoming V6 echo request" protocol="icmpv6:8,any" dir=in action=allow
     SHELL
   end

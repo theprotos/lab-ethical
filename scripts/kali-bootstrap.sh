@@ -4,14 +4,14 @@
 #time apt-get update -qqy
 
 echo -e "  --> Install packages"
-time apt-get install terminator dsniff bettercap -qqy --fix-missing&
+apt-get install terminator dsniff bettercap -qqy --fix-missing
 
 echo -e "  --> Shutdown eth0+"
-ip -force link set dev eth0 down&
+ip link set dev eth0 down&
 #ifconfig eth0 down
 
 echo -e "  --> Setup eth1+"
-ip addr replace 192.168.100.100 dev eth1&
+ip addr replace 192.168.100.100/24 dev eth1&
 #ip route replace 192.168.100.0/24 via 192.168.100.1 dev eth1 #onlink
 
 echo -e "  --> Setup default gateway+"
