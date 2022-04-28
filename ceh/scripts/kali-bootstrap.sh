@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
-#echo -e "  --> Update packages"
-#time apt-get update -qqy
+echo -e "  --> Update packages"
+time apt-get update -qqy
 
 echo -e "  --> Install packages"
 apt-get install terminator dsniff bettercap -qqy --fix-missing
