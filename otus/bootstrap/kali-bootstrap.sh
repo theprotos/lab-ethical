@@ -4,4 +4,6 @@ echo -e "  --> Update packages"
 time apt-get update -qqy
 
 echo -e "  --> Install packages"
-time apt-get install mc httrack wget -qqy --fix-missing
+time DEBIAN_FRONTEND=noninteractive apt-get install amass dnsmap mc httrack wget -qqy --fix-missing
+
+echo -e "  --> Bootstrap completed"

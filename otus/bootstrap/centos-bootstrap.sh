@@ -1,22 +1,17 @@
 #!/usr/bin/bash
 
-#echo -e "  --> Update packages"
-#time yum update -q -y --setopt=tsflags=noscripts
-
-echo -e "  --> Install packages+"
-time yum install net-tools -qqy
-
 echo -e "  --> SSH enable password login"
-sed -i 's/^PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
-systemctl reload sshd
+sed -i 's/^PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config && echo -e "\tset /etc/ssh/sshd_config [ OK ]"
+systemctl reload sshd && echo -e "\treload sshd [ OK ]"
 
-echo -e "  --> Shutdown eth0+"
-ip link set dev eth0 down&
-#ifconfig eht0 down
+echo -e "  --> Install repos"
+yum install yum epel-release -qqy && echo -e "\tepel \t[ OK ]"
+yum repolist -qq && echo -e "\tupdate repos \t[ OK ]"
 
-echo -e "  --> Setup eth1+"
-ip addr replace 192.168.100.102/24 dev eth1&
-#ip route replace 192.168.100.0/24 via 192.168.100.10 dev eth1
+echo -e "  --> Install packages"
+time yum install setroubleshoot-server net-tools nginx policycoreutils-python-utils -qqy && echo -e "\tinstalled \t[ OK ]"
 
-echo -e "  --> Setup default gateway+"
-ip route replace default via 192.168.100.10&
+echo -e "  --> Add users"
+useradd -m user -s /bin/bash || true
+
+echo -e "  --> Bootstrap completed"
