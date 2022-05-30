@@ -46,7 +46,7 @@ end
     kali.vm.provision "shell", run: "always", inline: <<-SHELL
       cd /vagrant
       ./kali-bootstrap.sh
-      ./labs/lab1.sh
+      #./labs/lab1.sh
     SHELL
     #  kali.vm.provision "ansible" do |ansible|
     #    ansible.compatibility_mode = "2.0"
@@ -75,7 +75,7 @@ end
         #vb.customize ["modifyvm", :id, "--nic1", "none"]
 
         unless File.exist?('./sata1.vdi')
-          vb.customize ['createhd', '--filename', './sata1.vdi', '--size', 500 * 1024]
+          vb.customize ['createhd', '--filename', './sata1.vdi', '--size', 1 * 1024]
         end
         vb.customize ["storagectl", :id, "--name", "SATA", "--add", "sata" ]
         vb.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 1, '--device', 0, '--type', 'hdd', '--medium',  './sata1.vdi']
@@ -88,6 +88,13 @@ end
         ./centos-bootstrap.sh
         #./network.sh -m 00:11:22:33:44:55
       SHELL
+
+      config.trigger.after :destroy do
+        if File.exist?('./sata1.vdi')
+          puts '==> Deleting SATA.vdi'
+          File.delete('./sata1.vdi')
+        end
+      end
     end
 
     ############### Ubuntu ###############
